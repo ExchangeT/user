@@ -1,40 +1,153 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DESIGN TOKENS — CSS Custom Properties
+   Dark mode is the default; light mode overrides with .light
+   ============================================================ */
+
+:root {
+  /* Dark mode (default) */
+  --canvas:           #0d1117;
+  --panel:            #161b27;
+  --panel-raised:     #1e2638;
+  --panel-overlay:    #1e2638;
+
+  --line:             rgba(255, 255, 255, 0.07);
+  --line-strong:      rgba(255, 255, 255, 0.12);
+
+  --ink-1:            #f1f5f9;
+  --ink-2:            #94a3b8;
+  --ink-3:            #64748b;
+
+  --brand:            #f59e0b;
+  --brand-hover:      #fbbf24;
+  --brand-fg:         #0d1117;
+  --brand-subtle:     rgba(245, 158, 11, 0.12);
+
+  --positive:         #10b981;
+  --positive-subtle:  rgba(16, 185, 129, 0.12);
+
+  --negative:         #ef4444;
+  --negative-subtle:  rgba(239, 68, 68, 0.12);
+
+  --info:             #3b82f6;
+  --info-subtle:      rgba(59, 130, 246, 0.12);
+
+  --caution:          #f59e0b;
+  --caution-subtle:   rgba(245, 158, 11, 0.10);
+}
+
+/* ──────────────────────────────────────────
+   LIGHT MODE overrides
+   ────────────────────────────────────────── */
+.light {
+  --canvas:           #f8fafc;
+  --panel:            #ffffff;
+  --panel-raised:     #f1f5f9;
+  --panel-overlay:    #ffffff;
+
+  --line:             rgba(0, 0, 0, 0.07);
+  --line-strong:      rgba(0, 0, 0, 0.13);
+
+  --ink-1:            #0f172a;
+  --ink-2:            #475569;
+  --ink-3:            #94a3b8;
+
+  --brand:            #d97706;
+  --brand-hover:      #b45309;
+  --brand-fg:         #ffffff;
+  --brand-subtle:     rgba(217, 119, 6, 0.10);
+
+  --positive:         #059669;
+  --positive-subtle:  rgba(5, 150, 105, 0.10);
+
+  --negative:         #dc2626;
+  --negative-subtle:  rgba(220, 38, 38, 0.10);
+
+  --info:             #2563eb;
+  --info-subtle:      rgba(37, 99, 235, 0.10);
+
+  --caution:          #d97706;
+  --caution-subtle:   rgba(217, 119, 6, 0.08);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
 @layer base {
-  html { 
-    font-size: 14px; 
-    scroll-behavior: smooth; 
+  html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background-color: #06080c; /* Deep dark for landing */
-    color: #ffffff;
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: var(--canvas);
+    color: var(--ink-1);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  *, *::before, *::after {
+    border-color: var(--line);
+  }
+
+  ::selection {
+    background-color: rgba(245, 158, 11, 0.25);
+    color: var(--ink-1);
   }
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 4px; }
-::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.5); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(245, 158, 11, 0.8); }
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3);
+}
+
+/* ============================================================
+   LEGACY UTILITY CLASSES (kept for existing components)
+   ============================================================ */
 
 .card {
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
 }
 
+.gradient-text {
+  background: linear-gradient(135deg, var(--brand) 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   COMPONENT UTILITIES
+   ============================================================ */
+
 @layer utilities {
-  .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500;
-  }
-  
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -48,44 +161,75 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .panel-border {
+    border: 1px solid var(--line);
+  }
+
+  .panel-bg {
+    background-color: var(--panel);
+  }
+
+  .raised-bg {
+    background-color: var(--panel-raised);
+  }
+
+  /* Number/data typography */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
 }
 
-/* ==================== ANIMATIONS ==================== */
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
 
 @keyframes ticker {
-  0% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 .animate-ticker {
   animation: ticker 40s linear infinite;
 }
-
 .animate-ticker:hover {
   animation-play-state: paused;
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 .animate-slide-up {
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   opacity: 0;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50%       { transform: translateY(-6px); }
 }
-
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   RAINBOWKIT / WEB3 OVERRIDES
+   ============================================================ */
+
+[data-rk] {
+  --rk-radii-modal: 16px !important;
+  --rk-radii-menuButton: 10px !important;
+}
+
+/* ============================================================
+   FOCUS STYLES
+   ============================================================ */
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
 }

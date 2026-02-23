@@ -7,6 +7,7 @@ import { formatCurrency, truncateAddress } from '@/lib/utils';
 import { useSession, signOut } from 'next-auth/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCurrentUser } from '@/lib/hooks';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import {
   Bell,
   Search,
@@ -14,14 +15,15 @@ import {
   ChevronDown,
   Menu,
   X,
-  LogOut
+  LogOut,
+  User,
+  Settings,
+  TrendingUp,
 } from 'lucide-react';
 
 export function Header() {
   const { data: session } = useSession();
   const { data: dbUser } = useCurrentUser();
-
-  // Optional: Merge session user info and DB user info
   const user = dbUser || session?.user;
 
   const { availableBalance } = useWalletStore();
@@ -31,136 +33,183 @@ export function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   return (
-    <header className="h-20 bg-cc-bg-primary/80 backdrop-blur-md border-b border-cc-border-subtle sticky top-0 z-40">
-      <div className="h-full px-4 lg:px-8 flex items-center justify-between">
-        {/* Left - Hamburger + Search */}
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          {/* Hamburger - Mobile Only */}
-          <button
-            onClick={toggleMobileSidebar}
-            className="lg:hidden p-2.5 rounded-xl bg-cc-bg-card border border-cc-border-light hover:border-cc-gold hover:text-cc-gold transition-all"
-          >
-            <Menu className="w-5 h-5 text-cc-text-muted transition-colors" />
-          </button>
+    <header className="h-16 bg-[var(--panel)] border-b border-[var(--line)] sticky top-0 z-40">
+      <div className="h-full px-4 lg:px-6 flex items-center gap-3">
 
-          {/* Mobile Logo */}
-          <Link href="/dashboard" className="lg:hidden flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-gold rounded-xl flex items-center justify-center text-sm shadow-[0_0_15px_rgba(244,196,48,0.3)]">
-              🏏
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-white drop-shadow-md">
-              Cric<span className="gradient-text">Chain</span>
-            </span>
-          </Link>
+        {/* Hamburger — Mobile only */}
+        <button
+          onClick={toggleMobileSidebar}
+          className="lg:hidden w-9 h-9 rounded-lg border border-[var(--line)] bg-[var(--panel-raised)] flex items-center justify-center text-[var(--ink-2)] hover:text-[var(--ink-1)] hover:border-[var(--line-strong)] transition-all flex-shrink-0"
+          aria-label="Toggle navigation"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
 
-          {/* Search - Desktop */}
-          <div className="relative hidden md:block">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-cc-text-muted" />
-            <input
-              type="text"
-              placeholder="Search markets, teams, events..."
-              className="w-72 lg:w-96 pl-12 pr-4 py-2.5 bg-cc-bg-card/50 border border-cc-border-light rounded-2xl text-sm text-white placeholder:text-cc-text-muted focus:outline-none focus:ring-1 focus:ring-cc-gold focus:border-cc-gold focus:bg-cc-bg-card transition-all shadow-inner"
-            />
+        {/* Mobile Logo */}
+        <Link href="/dashboard" className="lg:hidden flex items-center gap-2 flex-shrink-0">
+          <div className="w-7 h-7 bg-[var(--brand)] rounded-md flex items-center justify-center">
+            <TrendingUp className="w-3.5 h-3.5 text-[var(--brand-fg)]" />
           </div>
+          <span className="text-base font-extrabold text-[var(--ink-1)]">
+            Cric<span className="text-[var(--brand)]">Chain</span>
+          </span>
+        </Link>
 
-          {/* Search Icon - Mobile */}
-          <button
-            onClick={() => setSearchOpen(!searchOpen)}
-            className="md:hidden ml-auto p-2.5 rounded-xl bg-cc-bg-card border border-cc-border-light hover:border-cc-gold hover:text-cc-gold transition-all"
-          >
-            <Search className="w-5 h-5 text-cc-text-muted transition-colors" />
-          </button>
+        {/* Search — Desktop */}
+        <div className="relative hidden md:flex flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--ink-3)] pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search markets, matches, teams..."
+            className="w-full pl-9 pr-4 py-2 bg-[var(--panel-raised)] border border-[var(--line)] rounded-lg text-sm text-[var(--ink-1)] placeholder:text-[var(--ink-3)] focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/20 transition-all"
+          />
         </div>
 
-        {/* Right - Actions */}
-        <div className="flex items-center gap-3 sm:gap-5 hidden md:flex">
-          {/* Notifications */}
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Right actions */}
+        <div className="flex items-center gap-2">
+
+          {/* Mobile search toggle */}
           <button
-            className="relative p-2.5 rounded-xl bg-cc-bg-card border border-cc-border-light hover:border-cc-gold hover:text-cc-gold transition-all group"
-            onClick={() => setNotificationsOpen(!notificationsOpen)}
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="md:hidden w-9 h-9 rounded-lg border border-[var(--line)] bg-[var(--panel-raised)] flex items-center justify-center text-[var(--ink-2)] hover:text-[var(--ink-1)] transition-all"
+            aria-label="Search"
           >
-            <Bell className="w-5 h-5 text-cc-text-muted group-hover:text-cc-gold transition-colors" />
-            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-cc-red rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-cc-bg-primary shadow-[0_0_10px_rgba(239,68,68,0.5)]">
-              3
-            </span>
+            <Search className="w-4 h-4" />
           </button>
 
-          {/* Wallet Balance */}
+          {/* Theme toggle */}
+          <ThemeToggle />
+
+          {/* Notifications */}
+          <div className="relative">
+            <button
+              className="relative w-9 h-9 rounded-lg border border-[var(--line)] bg-[var(--panel-raised)] flex items-center justify-center text-[var(--ink-2)] hover:text-[var(--ink-1)] hover:border-[var(--line-strong)] transition-all"
+              onClick={() => setNotificationsOpen(!notificationsOpen)}
+              aria-label="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--negative)] rounded-full border border-[var(--panel)]" />
+            </button>
+
+            {notificationsOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-[var(--panel-overlay)] border border-[var(--line)] rounded-xl shadow-dropdown z-50 animate-scale-in overflow-hidden">
+                <div className="px-4 py-3 border-b border-[var(--line)] flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-[var(--ink-1)]">Notifications</h3>
+                  <button className="text-xs text-[var(--brand)] hover:underline font-medium">
+                    Mark all read
+                  </button>
+                </div>
+                <div className="max-h-72 overflow-y-auto divide-y divide-[var(--line)]">
+                  <NotifItem icon="🎉" title="You won ₹2,450!" desc="RCB vs MI prediction settled" time="2h ago" />
+                  <NotifItem icon="⚡" title="MI vs CSK is LIVE" desc="Your prediction is active" time="1h ago" />
+                  <NotifItem icon="🎫" title="IPL Ticket Campaign" desc="Only 3 referrals left!" time="5h ago" />
+                </div>
+                <div className="p-3 border-t border-[var(--line)]">
+                  <Link
+                    href="/notifications"
+                    onClick={() => setNotificationsOpen(false)}
+                    className="block text-center text-xs text-[var(--brand)] hover:underline font-medium py-1"
+                  >
+                    View all notifications
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Wallet balance */}
           <Link
             href="/wallet"
-            className="hidden sm:flex items-center gap-3 px-4 py-2.5 bg-cc-bg-card/80 border border-cc-border-light rounded-2xl hover:border-cc-gold hover:shadow-[0_0_15px_rgba(244,196,48,0.15)] transition-all group"
+            className="hidden sm:flex items-center gap-2 px-3 py-2 bg-[var(--panel-raised)] border border-[var(--line)] rounded-lg hover:border-[var(--line-strong)] transition-all group"
           >
-            <div className="w-8 h-8 rounded-full bg-cc-gold/10 flex items-center justify-center group-hover:bg-cc-gold/20 transition-colors">
-              <Wallet className="w-4 h-4 text-cc-gold" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] text-cc-text-muted uppercase tracking-wider font-semibold">Balance</span>
-              <span className="font-mono font-bold text-white text-sm leading-tight">
+            <Wallet className="w-3.5 h-3.5 text-[var(--brand)]" />
+            <div>
+              <p className="text-[10px] text-[var(--ink-3)] uppercase font-bold tracking-wider leading-none">Balance</p>
+              <p className="font-mono font-bold text-[var(--ink-1)] text-xs leading-tight tabular">
                 {formatCurrency(availableBalance)}
-              </span>
+              </p>
             </div>
           </Link>
 
-          {/* Connect Web3 Wallet */}
-          <div className="hidden lg:block">
-            <ConnectButton accountStatus="avatar" chainStatus="icon" showBalance={false} />
+          {/* Web3 Connect — Desktop only */}
+          <div className="hidden xl:block">
+            <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
           </div>
 
-          {/* User Menu */}
+          {/* User menu */}
           {user ? (
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-3 pl-5 ml-2 border-l border-cc-border-subtle text-left hover:opacity-80 transition-opacity"
+                className="flex items-center gap-2 pl-2 ml-1 border-l border-[var(--line)] hover:opacity-80 transition-opacity"
               >
-                <div className="w-10 h-10 bg-gradient-gold rounded-full flex items-center justify-center font-bold text-cc-bg-primary shadow-[0_0_15px_rgba(244,196,48,0.3)]">
+                <div className="w-8 h-8 bg-[var(--brand-subtle)] border border-[var(--brand)]/20 rounded-lg flex items-center justify-center font-bold text-sm text-[var(--brand)]">
                   {/* @ts-ignore */}
                   {user?.avatar || user?.username?.[0]?.toUpperCase() || user?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
-                <div className="hidden xl:block">
+                <div className="hidden xl:block text-left">
                   {/* @ts-ignore */}
-                  <p className="text-sm font-bold text-white">{user?.username || user?.name || 'User'}</p>
-                  <p className="text-xs text-cc-text-muted font-medium">
+                  <p className="text-sm font-semibold text-[var(--ink-1)] leading-tight">{user?.username || user?.name || 'User'}</p>
+                  <p className="text-[10px] text-[var(--ink-3)] leading-tight font-medium">
                     {/* @ts-ignore */}
-                    {user?.walletAddress ? truncateAddress(user.walletAddress) : 'Not connected'}
+                    {user?.walletAddress ? truncateAddress(user.walletAddress) : 'No wallet'}
                   </p>
                 </div>
-                <ChevronDown className="w-4 h-4 text-cc-text-muted hidden sm:block" />
+                <ChevronDown className="w-3.5 h-3.5 text-[var(--ink-3)] hidden xl:block" />
               </button>
 
-              {/* User Dropdown */}
               {userMenuOpen && (
-                <div className="absolute right-0 mt-3 w-56 bg-cc-bg-secondary/95 backdrop-blur-xl border border-cc-border-light rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden py-1 z-50">
-                  <div className="px-4 py-3 border-b border-cc-border-subtle xl:hidden bg-cc-bg-card/50">
+                <div className="absolute right-0 mt-2 w-52 bg-[var(--panel-overlay)] border border-[var(--line)] rounded-xl shadow-dropdown z-50 animate-scale-in overflow-hidden">
+                  {/* Mobile: show user info */}
+                  <div className="px-4 py-3 border-b border-[var(--line)] xl:hidden">
                     {/* @ts-ignore */}
-                    <p className="text-sm font-bold text-white">{user?.username || user?.name || 'User'}</p>
-                    <p className="text-xs text-cc-text-muted truncate mt-0.5">{user?.email}</p>
+                    <p className="text-sm font-semibold text-[var(--ink-1)]">{user?.username || user?.name || 'User'}</p>
+                    <p className="text-xs text-[var(--ink-3)] truncate mt-0.5">{user?.email}</p>
                   </div>
-                  <div className="p-2">
+                  <div className="p-1.5 space-y-0.5">
                     <Link
                       href="/profile"
-                      className="block px-3 py-2 text-sm font-medium text-cc-text-secondary hover:bg-cc-bg-card hover:text-white rounded-xl transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--panel-raised)] hover:text-[var(--ink-1)] rounded-lg transition-colors"
                       onClick={() => setUserMenuOpen(false)}
                     >
-                      Profile Settings
+                      <User className="w-4 h-4" />
+                      Profile
                     </Link>
+                    <Link
+                      href="/settings"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-[var(--ink-2)] hover:bg-[var(--panel-raised)] hover:text-[var(--ink-1)] rounded-lg transition-colors"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <Settings className="w-4 h-4" />
+                      Settings
+                    </Link>
+                    <div className="h-px bg-[var(--line)] my-1" />
                     <button
                       onClick={() => signOut({ callbackUrl: '/login' })}
-                      className="w-full text-left px-3 py-2 mt-1 text-sm font-medium text-cc-red hover:bg-cc-red/10 rounded-xl flex items-center gap-2 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-[var(--negative)] hover:bg-[var(--negative-subtle)] rounded-lg transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
-                      Disconnect
+                      Sign Out
                     </button>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-3 pl-5 ml-2 border-l border-cc-border-subtle">
-              <Link href="/login" className="text-sm font-semibold text-cc-text-secondary hover:text-white hidden sm:block transition-colors">
+            <div className="flex items-center gap-2 pl-2 ml-1 border-l border-[var(--line)]">
+              <Link
+                href="/login"
+                className="text-sm font-medium text-[var(--ink-2)] hover:text-[var(--ink-1)] hidden sm:block transition-colors"
+              >
                 Sign In
               </Link>
-              <Link href="/signup" className="px-5 py-2.5 bg-cc-gold hover:bg-cc-gold-light text-cc-bg-primary text-sm font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(244,196,48,0.3)] hover:shadow-[0_0_25px_rgba(244,196,48,0.5)]">
+              <Link
+                href="/signup"
+                className="px-3 py-1.5 bg-[var(--brand)] text-[var(--brand-fg)] text-sm font-semibold rounded-lg hover:bg-[var(--brand-hover)] transition-all shadow-sm"
+              >
                 Sign Up
               </Link>
             </div>
@@ -168,61 +217,23 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Search Expandable */}
+      {/* Mobile search expandable */}
       {searchOpen && (
-        <div className="md:hidden px-4 pb-3 bg-[#111827] border-b border-white/[0.06]">
+        <div className="md:hidden px-4 pb-3 bg-[var(--panel)] border-b border-[var(--line)]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748b]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--ink-3)]" />
             <input
               type="text"
               placeholder="Search matches, teams..."
               autoFocus
-              className="w-full pl-10 pr-10 py-2.5 bg-[#1a2235] border border-white/10 rounded-xl text-sm text-white placeholder:text-[#64748b] focus:outline-none focus:border-[#f4c430] transition-all"
+              className="w-full pl-9 pr-10 py-2.5 bg-[var(--panel-raised)] border border-[var(--line)] rounded-lg text-sm text-[var(--ink-1)] placeholder:text-[var(--ink-3)] focus:outline-none focus:border-[var(--brand)] transition-all"
             />
             <button
               onClick={() => setSearchOpen(false)}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ink-3)] hover:text-[var(--ink-1)]"
             >
-              <X className="w-4 h-4 text-[#64748b]" />
+              <X className="w-4 h-4" />
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Notifications Dropdown */}
-      {notificationsOpen && (
-        <div className="absolute right-4 lg:right-6 top-16 w-80 bg-[#1a2235] border border-white/10 rounded-2xl shadow-xl overflow-hidden z-50">
-          <div className="p-4 border-b border-white/10">
-            <h3 className="font-semibold">Notifications</h3>
-          </div>
-          <div className="max-h-80 overflow-y-auto">
-            <NotificationItem
-              icon="🎉"
-              title="You won ₹2,450!"
-              description="RCB vs MI prediction settled"
-              time="2 hours ago"
-            />
-            <NotificationItem
-              icon="🔥"
-              title="MI vs CSK is LIVE"
-              description="Your prediction is active"
-              time="1 hour ago"
-            />
-            <NotificationItem
-              icon="🎫"
-              title="IPL Ticket Campaign"
-              description="Only 3 referrals left to win!"
-              time="5 hours ago"
-            />
-          </div>
-          <div className="p-3 border-t border-white/10">
-            <Link
-              href="/notifications"
-              onClick={() => setNotificationsOpen(false)}
-              className="block text-center text-sm text-[#f4c430] hover:underline"
-            >
-              View all notifications
-            </Link>
           </div>
         </div>
       )}
@@ -230,25 +241,17 @@ export function Header() {
   );
 }
 
-function NotificationItem({
-  icon,
-  title,
-  description,
-  time,
-}: {
-  icon: string;
-  title: string;
-  description: string;
-  time: string;
-}) {
+function NotifItem({
+  icon, title, desc, time,
+}: { icon: string; title: string; desc: string; time: string }) {
   return (
-    <div className="p-4 hover:bg-white/[0.02] transition-colors cursor-pointer border-b border-white/[0.06] last:border-b-0">
+    <div className="px-4 py-3 hover:bg-[var(--panel-raised)] transition-colors cursor-pointer">
       <div className="flex gap-3">
-        <span className="text-xl">{icon}</span>
-        <div className="flex-1">
-          <p className="text-sm font-medium text-white">{title}</p>
-          <p className="text-xs text-[#64748b]">{description}</p>
-          <p className="text-xs text-[#64748b] mt-1">{time}</p>
+        <span className="text-lg leading-none mt-0.5">{icon}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-[var(--ink-1)] truncate">{title}</p>
+          <p className="text-xs text-[var(--ink-3)] mt-0.5 truncate">{desc}</p>
+          <p className="text-[10px] text-[var(--ink-3)] mt-1 font-medium">{time}</p>
         </div>
       </div>
     </div>

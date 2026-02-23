@@ -7,12 +7,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#0a0e17]">
+    <div className="min-h-screen bg-[var(--canvas)]">
       <Sidebar />
       <MobileSidebar />
-      <div className="lg:ml-[260px]">
+      <div className="lg:ml-sidebar">
         <Header />
-        <main className="p-4 lg:p-6">{children}</main>
+        <main className="p-4 lg:p-6 max-w-[1600px]">
+          {children}
+        </main>
       </div>
     </div>
   );
