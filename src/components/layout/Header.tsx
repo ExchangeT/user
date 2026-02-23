@@ -7,7 +7,6 @@ import { formatCurrency, truncateAddress } from '@/lib/utils';
 import { useSession, signOut } from 'next-auth/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useCurrentUser } from '@/lib/hooks';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import {
   Bell,
   Search,
@@ -79,9 +78,6 @@ export function Header() {
           >
             <Search className="w-4 h-4" />
           </button>
-
-          {/* Theme toggle */}
-          <ThemeToggle />
 
           {/* Notifications */}
           <div className="relative">
