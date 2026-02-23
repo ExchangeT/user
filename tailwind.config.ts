@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: 'class',
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -104,7 +103,7 @@ const config: Config = {
         'gradient-green': 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
         'gradient-purple': 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
         'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-        'gradient-dark': 'linear-gradient(180deg, #1e2638 0%, #0d1117 100%)',
+        'gradient-light': 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)',
       },
       borderRadius: {
         'sm': '6px',
@@ -117,15 +116,15 @@ const config: Config = {
         '4xl': '24px',
       },
       boxShadow: {
-        'brand': '0 4px 20px rgba(245, 158, 11, 0.25)',
-        'brand-lg': '0 8px 32px rgba(245, 158, 11, 0.3)',
-        'gold': '0 4px 20px rgba(245, 158, 11, 0.25)',
-        'gold-lg': '0 8px 32px rgba(245, 158, 11, 0.3)',
-        'green': '0 4px 16px rgba(16, 185, 129, 0.2)',
-        'card': '0 1px 4px rgba(0, 0, 0, 0.12)',
-        'card-hover': '0 4px 16px rgba(0, 0, 0, 0.16)',
-        'card-lg': '0 8px 32px rgba(0, 0, 0, 0.24)',
-        'dropdown': '0 8px 32px rgba(0, 0, 0, 0.32)',
+        'brand': '0 4px 16px rgba(217, 119, 6, 0.20)',
+        'brand-lg': '0 8px 28px rgba(217, 119, 6, 0.25)',
+        'gold': '0 4px 16px rgba(217, 119, 6, 0.20)',
+        'gold-lg': '0 8px 28px rgba(217, 119, 6, 0.25)',
+        'green': '0 4px 14px rgba(5, 150, 105, 0.18)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05)',
+        'card-hover': '0 4px 12px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06)',
+        'card-lg': '0 10px 30px rgba(0, 0, 0, 0.12)',
+        'dropdown': '0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06)',
       },
       spacing: {
         'sidebar': '256px',
