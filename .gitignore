@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# next build
+.next/
+out/
+build/
+
+# environment
+.env*
+.DS_Store
+
+# large folders
+contracts/
+cricchain-ml/
+
+# misc
+*.pdf
