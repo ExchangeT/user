@@ -1,25 +1,62 @@
 export default function AuthLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center relative overflow-hidden">
-            {/* Animated Background Pattern */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#f4c430]/5 rounded-full blur-3xl animate-pulse-slow" />
-                <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-[#ff6b35]/5 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#8b5cf6]/3 rounded-full blur-3xl" />
-                {/* Cricket-themed floating elements */}
-                <div className="absolute top-20 left-20 text-4xl opacity-10 animate-float">🏏</div>
-                <div className="absolute top-40 right-32 text-3xl opacity-10 animate-float" style={{ animationDelay: '1s' }}>⚡</div>
-                <div className="absolute bottom-32 left-40 text-3xl opacity-10 animate-float" style={{ animationDelay: '2s' }}>🎯</div>
-                <div className="absolute bottom-20 right-20 text-4xl opacity-10 animate-float" style={{ animationDelay: '0.5s' }}>🏆</div>
-            </div>
-            {/* Content */}
-            <div className="relative z-10 w-full max-w-md mx-4">
-                {children}
-            </div>
+  return (
+    <div className="min-h-screen bg-[var(--canvas)] flex">
+      {/* Left column — branding */}
+      <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-between p-10 bg-[var(--panel)] border-r border-[var(--line)] flex-shrink-0">
+        {/* Logo */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-[var(--brand)] rounded-lg flex items-center justify-center">
+            <span className="text-[var(--brand-fg)] font-black text-sm">CC</span>
+          </div>
+          <span className="text-base font-extrabold text-[var(--ink-1)]">
+            Cric<span className="text-[var(--brand)]">Chain</span>
+          </span>
         </div>
-    );
+
+        {/* Main pitch */}
+        <div>
+          <p className="text-xs font-semibold text-[var(--brand)] uppercase tracking-widest mb-4">
+            Prediction Markets
+          </p>
+          <h2 className="text-3xl font-bold text-[var(--ink-1)] leading-tight mb-5">
+            Institutional-grade cricket prediction markets
+          </h2>
+          <p className="text-sm text-[var(--ink-2)] leading-relaxed mb-8">
+            Trade prediction markets across IPL, T20 World Cup, and international cricket powered by on-chain settlement and real-time AI odds.
+          </p>
+
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { value: "12Cr+", label: "Total Volume" },
+              { value: "85K+",   label: "Active Users" },
+              { value: "99.9%",  label: "Uptime" },
+              { value: "3s",     label: "Settlement" },
+            ].map((s) => (
+              <div key={s.label} className="p-3 bg-[var(--panel-raised)] rounded-lg border border-[var(--line)]">
+                <p className="font-mono font-bold text-lg text-[var(--ink-1)]">
+                  {s.value === "12Cr+" ? "₹" + s.value : s.value === "3s" ? "< " + s.value : s.value}
+                </p>
+                <p className="text-xs text-[var(--ink-3)] font-medium mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-xs text-[var(--ink-3)]">
+          &#169; 2026 CricChain &middot; Decentralized &middot; Non-Custodial
+        </p>
+      </div>
+
+      {/* Right column — form */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
 }

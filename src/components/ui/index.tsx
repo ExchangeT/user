@@ -3,7 +3,9 @@
 import { cn } from '@/lib/utils';
 import { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes, forwardRef } from 'react';
 
-// Card Component
+// ─────────────────────────────────────────
+// CARD
+// ─────────────────────────────────────────
 interface CardProps {
   children: ReactNode;
   className?: string;
@@ -13,11 +15,14 @@ interface CardProps {
 
 export function Card({ children, className, hover = false, style }: CardProps) {
   return (
-    <div className={cn(
-      'bg-[#1a2235] border border-white/[0.06] rounded-2xl',
-      hover && 'transition-all duration-300 hover:border-white/10 hover:-translate-y-1',
-      className
-    )} style={style}>
+    <div
+      className={cn(
+        'bg-[var(--panel)] border border-[var(--line)] rounded-xl',
+        hover && 'transition-all duration-200 hover:border-[var(--line-strong)] hover:-translate-y-px hover:shadow-card-hover cursor-pointer',
+        className
+      )}
+      style={style}
+    >
       {children}
     </div>
   );
@@ -25,44 +30,53 @@ export function Card({ children, className, hover = false, style }: CardProps) {
 
 export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('px-6 py-4 border-b border-white/[0.06]', className)}>
+    <div className={cn(
+      'px-5 py-4 border-b border-[var(--line)] flex items-center justify-between',
+      className
+    )}>
       {children}
     </div>
   );
 }
 
 export function CardContent({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('p-6', className)}>{children}</div>;
+  return <div className={cn('p-5', className)}>{children}</div>;
 }
 
-// Button Component
+// ─────────────────────────────────────────
+// BUTTON
+// ─────────────────────────────────────────
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'success' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'success' | 'danger' | 'outline';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   children: ReactNode;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'md', className, children, ...props }, ref) => {
     const variants = {
-      primary: 'bg-gradient-to-r from-[#f4c430] to-[#ff6b35] text-[#0f172a] hover:-translate-y-0.5 hover:shadow-lg',
-      secondary: 'bg-[#243049] border border-white/10 text-white hover:border-[#f4c430] hover:text-[#f4c430]',
-      ghost: 'bg-transparent text-[#94a3b8] hover:bg-[#243049] hover:text-white',
-      success: 'bg-gradient-to-r from-[#10b981] to-[#34d399] text-white hover:-translate-y-0.5',
-      danger: 'bg-[#ef4444] text-white hover:bg-[#dc2626]',
+      primary:   'bg-[var(--brand)] text-[var(--brand-fg)] hover:bg-[var(--brand-hover)] shadow-sm hover:shadow-brand transition-all',
+      secondary: 'bg-[var(--panel-raised)] border border-[var(--line)] text-[var(--ink-1)] hover:border-[var(--line-strong)] hover:bg-[var(--panel-raised)] transition-all',
+      ghost:     'bg-transparent text-[var(--ink-2)] hover:bg-[var(--panel-raised)] hover:text-[var(--ink-1)] transition-all',
+      outline:   'bg-transparent border border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand-subtle)] transition-all',
+      success:   'bg-[var(--positive)] text-white hover:opacity-90 transition-all',
+      danger:    'bg-[var(--negative)] text-white hover:opacity-90 transition-all',
     };
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2',
-      lg: 'px-6 py-3 text-lg',
+      xs: 'px-2.5 py-1 text-xs rounded-lg',
+      sm: 'px-3 py-1.5 text-sm rounded-lg',
+      md: 'px-4 py-2 text-sm rounded-xl',
+      lg: 'px-5 py-2.5 text-base rounded-xl',
     };
 
     return (
       <button
         ref={ref}
         className={cn(
-          'rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
+          'font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer',
+          'disabled:opacity-40 disabled:cursor-not-allowed',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas)]',
           variants[variant],
           sizes[size],
           className
@@ -76,96 +90,127 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
-// Input Component
+// ─────────────────────────────────────────
+// INPUT
+// ─────────────────────────────────────────
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  hint?: string;
   icon?: ReactNode;
+  suffix?: ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, icon, className, ...props }, ref) => {
+  ({ label, error, hint, icon, suffix, className, ...props }, ref) => {
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-[#94a3b8] mb-2">
+          <label className="block text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--ink-3)] pointer-events-none">
               {icon}
             </div>
           )}
           <input
             ref={ref}
             className={cn(
-              'w-full px-4 py-3 bg-[#111827] border border-white/10 rounded-xl text-white placeholder:text-[#64748b] focus:outline-none focus:border-[#f4c430] transition-all',
-              icon && 'pl-10',
-              error && 'border-red-500',
+              'w-full px-3 py-2.5 bg-[var(--panel-raised)] border border-[var(--line)] rounded-lg',
+              'text-[var(--ink-1)] text-sm placeholder:text-[var(--ink-3)]',
+              'focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30',
+              'transition-all duration-150',
+              icon && 'pl-9',
+              suffix && 'pr-10',
+              error && 'border-[var(--negative)] focus:ring-[var(--negative)]/30',
               className
             )}
             {...props}
           />
+          {suffix && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ink-3)]">
+              {suffix}
+            </div>
+          )}
         </div>
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <p className="mt-1.5 text-xs text-[var(--negative)] font-medium">{error}</p>}
+        {hint && !error && <p className="mt-1.5 text-xs text-[var(--ink-3)]">{hint}</p>}
       </div>
     );
   }
 );
 Input.displayName = 'Input';
 
-// Badge Component
+// ─────────────────────────────────────────
+// BADGE
+// ─────────────────────────────────────────
 interface BadgeProps {
-  variant?: 'gold' | 'green' | 'red' | 'blue' | 'purple' | 'live';
+  variant?: 'default' | 'gold' | 'green' | 'red' | 'blue' | 'purple' | 'live' | 'outline';
   children: ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export function Badge({ variant = 'gold', children, className, style }: BadgeProps) {
+export function Badge({ variant = 'default', children, className, style }: BadgeProps) {
   const variants = {
-    gold: 'bg-[#f4c430]/15 text-[#f4c430] border border-[#f4c430]/30',
-    green: 'bg-[#10b981]/15 text-[#10b981]',
-    red: 'bg-[#ef4444]/15 text-[#ef4444]',
-    blue: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-    purple: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-    live: 'bg-[#ef4444] text-white animate-pulse',
+    default: 'bg-[var(--panel-raised)] text-[var(--ink-2)] border border-[var(--line)]',
+    gold:    'bg-[var(--brand-subtle)] text-[var(--brand)] border border-[var(--brand)]/20',
+    green:   'bg-[var(--positive-subtle)] text-[var(--positive)]',
+    red:     'bg-[var(--negative-subtle)] text-[var(--negative)]',
+    blue:    'bg-[var(--info-subtle)] text-[var(--info)]',
+    purple:  'bg-purple-500/10 text-purple-400',
+    live:    'bg-[var(--negative)] text-white',
+    outline: 'border border-[var(--line)] text-[var(--ink-2)] bg-transparent',
   };
 
   return (
-    <span className={cn(
-      'inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold',
-      variants[variant],
-      className
-    )} style={style}>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold tracking-wide',
+        variant === 'live' && 'animate-pulse',
+        variants[variant],
+        className
+      )}
+      style={style}
+    >
       {children}
     </span>
   );
 }
 
-// Progress Bar Component
+// ─────────────────────────────────────────
+// PROGRESS BAR
+// ─────────────────────────────────────────
 interface ProgressBarProps {
   value: number;
   max?: number;
   className?: string;
   showLabel?: boolean;
+  color?: 'brand' | 'positive' | 'negative' | 'info';
 }
 
-export function ProgressBar({ value, max = 100, className, showLabel }: ProgressBarProps) {
+export function ProgressBar({ value, max = 100, className, showLabel, color = 'brand' }: ProgressBarProps) {
   const percentage = Math.min((value / max) * 100, 100);
+  const colorMap = {
+    brand:    'bg-[var(--brand)]',
+    positive: 'bg-[var(--positive)]',
+    negative: 'bg-[var(--negative)]',
+    info:     'bg-[var(--info)]',
+  };
 
   return (
     <div className={className}>
-      <div className="h-1.5 bg-[#243049] rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[var(--panel-raised)] rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#f4c430] to-[#ff6b35] rounded-full transition-all duration-500"
+          className={cn('h-full rounded-full transition-all duration-500', colorMap[color])}
           style={{ width: `${percentage}%` }}
         />
       </div>
       {showLabel && (
-        <p className="text-xs text-[#64748b] mt-1">
+        <p className="text-xs text-[var(--ink-3)] mt-1 font-mono">
           {value} / {max}
         </p>
       )}
@@ -173,7 +218,9 @@ export function ProgressBar({ value, max = 100, className, showLabel }: Progress
   );
 }
 
-// Stat Card Component
+// ─────────────────────────────────────────
+// STAT CARD
+// ─────────────────────────────────────────
 interface StatCardProps {
   icon: ReactNode;
   label: string;
@@ -181,57 +228,75 @@ interface StatCardProps {
   change?: { value: number; type: 'increase' | 'decrease' };
   iconBg?: string;
   className?: string;
+  valueColor?: string;
 }
 
-export function StatCard({ icon, label, value, change, iconBg, className }: StatCardProps) {
+export function StatCard({ icon, label, value, change, iconBg, className, valueColor }: StatCardProps) {
   return (
     <Card className={cn('p-4', className)}>
-      <div className="flex items-start justify-between">
-        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center text-lg', iconBg || 'bg-[#f4c430]/15')}>
+      <div className="flex items-start justify-between mb-3">
+        <div className={cn(
+          'w-9 h-9 rounded-lg flex items-center justify-center text-base flex-shrink-0',
+          iconBg || 'bg-[var(--brand-subtle)]'
+        )}>
           {icon}
         </div>
         {change && (
           <span className={cn(
-            'text-xs font-semibold',
-            change.type === 'increase' ? 'text-[#10b981]' : 'text-[#ef4444]'
+            'text-xs font-semibold tabular',
+            change.type === 'increase' ? 'text-[var(--positive)]' : 'text-[var(--negative)]'
           )}>
-            {change.type === 'increase' ? '↑' : '↓'} {change.value}%
+            {change.type === 'increase' ? '+' : '−'}{change.value}%
           </span>
         )}
       </div>
-      <div className="mt-3">
-        <p className="font-mono text-2xl font-bold">{value}</p>
-        <p className="text-xs text-[#64748b] mt-0.5">{label}</p>
-      </div>
+      <p className={cn(
+        'font-mono text-xl font-bold tabular leading-tight',
+        valueColor || 'text-[var(--ink-1)]'
+      )}>
+        {value}
+      </p>
+      <p className="text-xs text-[var(--ink-3)] mt-0.5 font-medium">{label}</p>
     </Card>
   );
 }
 
-// Tab Component
+// ─────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────
 interface TabsProps {
   tabs: { id: string; label: string; count?: number }[];
   activeTab: string;
   onChange: (tabId: string) => void;
   className?: string;
+  size?: 'sm' | 'md';
 }
 
-export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
+export function Tabs({ tabs, activeTab, onChange, className, size = 'md' }: TabsProps) {
   return (
-    <div className={cn('flex gap-2', className)}>
+    <div className={cn('flex gap-1 p-1 bg-[var(--panel-raised)] rounded-lg border border-[var(--line)]', className)}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={cn(
-            'px-4 py-2 rounded-lg font-medium transition-all duration-200',
+            'flex items-center gap-1.5 rounded-md font-medium transition-all duration-150',
+            size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm',
             activeTab === tab.id
-              ? 'bg-[#f4c430]/10 text-[#f4c430] border border-[#f4c430]/30'
-              : 'text-[#64748b] hover:text-white hover:bg-[#243049]'
+              ? 'bg-[var(--panel)] text-[var(--ink-1)] shadow-sm border border-[var(--line)]'
+              : 'text-[var(--ink-3)] hover:text-[var(--ink-2)] hover:bg-[var(--panel)]/50'
           )}
         >
           {tab.label}
           {tab.count !== undefined && (
-            <span className="ml-1.5 text-xs opacity-75">({tab.count})</span>
+            <span className={cn(
+              'text-[10px] px-1.5 py-0.5 rounded font-semibold tabular min-w-[18px] text-center',
+              activeTab === tab.id
+                ? 'bg-[var(--brand-subtle)] text-[var(--brand)]'
+                : 'bg-[var(--line)] text-[var(--ink-3)]'
+            )}>
+              {tab.count}
+            </span>
           )}
         </button>
       ))}
@@ -239,21 +304,24 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   );
 }
 
-// Avatar Component
+// ─────────────────────────────────────────
+// AVATAR
+// ─────────────────────────────────────────
 interface AvatarProps {
   src?: string;
   alt?: string;
   fallback: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
 export function Avatar({ src, alt, fallback, size = 'md', className }: AvatarProps) {
   const sizes = {
-    sm: 'w-8 h-8 text-sm',
-    md: 'w-10 h-10 text-base',
-    lg: 'w-14 h-14 text-xl',
-    xl: 'w-20 h-20 text-3xl',
+    xs: 'w-6 h-6 text-xs rounded-md',
+    sm: 'w-8 h-8 text-sm rounded-lg',
+    md: 'w-10 h-10 text-base rounded-xl',
+    lg: 'w-14 h-14 text-xl rounded-2xl',
+    xl: 'w-20 h-20 text-3xl rounded-2xl',
   };
 
   if (src) {
@@ -261,23 +329,25 @@ export function Avatar({ src, alt, fallback, size = 'md', className }: AvatarPro
       <img
         src={src}
         alt={alt || fallback}
-        className={cn('rounded-2xl object-cover', sizes[size], className)}
+        className={cn('object-cover', sizes[size], className)}
       />
     );
   }
 
   return (
     <div className={cn(
-      'rounded-2xl bg-gradient-to-r from-[#f4c430] to-[#ff6b35] flex items-center justify-center font-bold text-[#0f172a]',
+      'bg-[var(--brand-subtle)] border border-[var(--brand)]/20 flex items-center justify-center font-bold text-[var(--brand)]',
       sizes[size],
       className
     )}>
-      {fallback}
+      {fallback.charAt(0).toUpperCase()}
     </div>
   );
 }
 
-// Empty State Component
+// ─────────────────────────────────────────
+// EMPTY STATE
+// ─────────────────────────────────────────
 interface EmptyStateProps {
   icon: ReactNode;
   title: string;
@@ -287,13 +357,56 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="w-16 h-16 rounded-full bg-[#243049] flex items-center justify-center text-3xl mb-4">
+    <div className="flex flex-col items-center justify-center py-14 text-center px-4">
+      <div className="w-14 h-14 rounded-2xl bg-[var(--panel-raised)] border border-[var(--line)] flex items-center justify-center text-2xl mb-4">
         {icon}
       </div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-[#64748b] mb-4 max-w-sm">{description}</p>
+      <h3 className="text-base font-semibold text-[var(--ink-1)] mb-1">{title}</h3>
+      <p className="text-sm text-[var(--ink-3)] mb-5 max-w-xs leading-relaxed">{description}</p>
       {action}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// DIVIDER
+// ─────────────────────────────────────────
+export function Divider({ className, label }: { className?: string; label?: string }) {
+  if (label) {
+    return (
+      <div className={cn('flex items-center gap-3 my-2', className)}>
+        <div className="flex-1 h-px bg-[var(--line)]" />
+        <span className="text-xs text-[var(--ink-3)] font-medium px-1">{label}</span>
+        <div className="flex-1 h-px bg-[var(--line)]" />
+      </div>
+    );
+  }
+  return <hr className={cn('border-[var(--line)]', className)} />;
+}
+
+// ─────────────────────────────────────────
+// SECTION HEADER
+// ─────────────────────────────────────────
+export function SectionHeader({
+  title,
+  description,
+  action,
+  className,
+}: {
+  title: string;
+  description?: string;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn('flex items-start justify-between gap-4', className)}>
+      <div>
+        <h1 className="text-2xl font-bold text-[var(--ink-1)] tracking-tight">{title}</h1>
+        {description && (
+          <p className="text-sm text-[var(--ink-3)] mt-1">{description}</p>
+        )}
+      </div>
+      {action && <div className="flex-shrink-0">{action}</div>}
     </div>
   );
 }
